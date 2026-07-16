@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<!--
+  RoutePlay 소개 페이지 — 공공데이터포털 운영계정 신청의 '서비스 URL' 용.
+
+  ⚠️ 이 폴더는 routeplay 앱 저장소와 분리된 '공개' 저장소에 올린다.
+     앱 저장소(YlMyoonjin/routeplay)는 API 키가 들어 있어 절대 공개하면 안 된다.
+     여기엔 키가 한 줄도 없어야 한다.
+-->
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoutePlay — 오토바이 라이딩 코스 추천</title>
+<meta name="description" content="오토바이 라이더를 위한 라이딩 코스 추천 앱. 고속도로를 피한 이륜차 경로와 경로 주변 관광지·맛집을 추천합니다.">
+<style>
+  :root{
+    --brand:#E8552B;
+    --dark:#1B2A4A;
+    --ink:#22222A;
+    --sub:#6B6B70;
+    --line:#EDEDF0;
+    --bg:#FFFFFF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',
+                'Noto Sans KR',sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:860px;margin:0 auto;padding:0 24px}
+
+  header{
+    background:linear-gradient(160deg,#FFF6F3 0%,#FFFFFF 70%);
+    border-bottom:1px solid var(--line);
+    padding:64px 0 52px;
+  }
+  .logo{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+  .logo svg{width:46px;height:46px;flex:none}
+  .logo h1{font-size:34px;font-weight:800;letter-spacing:-.5px;color:var(--dark)}
+  .tag{
+    display:inline-block;background:var(--brand);color:#fff;
+    font-size:12px;font-weight:700;border-radius:999px;padding:5px 12px;margin-bottom:14px;
+  }
+  .lead{font-size:17px;color:var(--sub);max-width:620px}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:20px;font-weight:800;color:var(--dark);margin-bottom:8px}
+  h2 + .desc{color:var(--sub);font-size:14px;margin-bottom:24px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .card{
+    border:1px solid var(--line);border-radius:14px;padding:20px;background:#fff;
+  }
+  .card .n{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;border-radius:50%;
+    background:var(--brand);color:#fff;font-size:12px;font-weight:800;margin-bottom:10px;
+  }
+  .card h3{font-size:15px;font-weight:700;margin-bottom:6px}
+  .card p{font-size:13.5px;color:var(--sub)}
+
+  .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+  .shots img{
+    width:100%;border:1px solid var(--line);border-radius:12px;display:block;background:#FAFAFB;
+  }
+  .shots figcaption{font-size:12.5px;color:var(--sub);margin-top:8px;text-align:center}
+
+  .api{background:#FAFAFB;border:1px solid var(--line);border-radius:14px;padding:22px}
+  .api table{width:100%;border-collapse:collapse;font-size:13.5px}
+  .api td{padding:9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+  .api tr:last-child td{border-bottom:0}
+  .api td:first-child{
+    font-weight:700;color:var(--dark);white-space:nowrap;padding-right:18px;width:1%;
+  }
+  .api td:last-child{color:var(--sub)}
+  .src{font-size:13px;color:var(--sub);margin-top:16px}
+  .src a{color:var(--brand)}
+
+  footer{padding:36px 0 60px;font-size:13px;color:var(--sub)}
+  footer strong{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="logo">
+      <!-- 바이크 아이콘 (인라인 SVG — 외부 파일 의존 없음) -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="#E8552B" stroke-width="1.6"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="5.5" cy="17.5" r="3.5"/>
+        <circle cx="18.5" cy="17.5" r="3.5"/>
+        <path d="M15 17.5h-6l-3.5-4h5l2-3h4l1.5 3"/>
+        <path d="M14 6h3"/>
+      </svg>
+      <h1>RoutePlay</h1>
+    </div>
+    <span class="tag">오토바이 라이딩 코스 추천</span>
+    <p class="lead">
+      출발지와 목적지만 정하면, 고속도로·자동차전용도로를 피한 이륜차 통행 가능 경로를
+      만들고 경로 주변의 관광지와 맛집을 코스에 넣어줍니다.
+      라이더가 국도 위주로 안전하게 달리면서 지역의 관광지를 방문하도록 돕는 앱입니다.
+    </p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>주요 기능</h2>
+    <p class="desc">한국관광공사 국문 관광정보 서비스를 활용한 화면입니다.</p>
+    <div class="grid">
+      <div class="card">
+        <span class="n">1</span>
+        <h3>추천 코스 목록</h3>
+        <p>경로 주변 관광지를 경치 · 역사문화 · 카페맛집 테마로 묶어 코스로 제시합니다.
+           카드 썸네일에 관광공사 대표이미지를 사용합니다.</p>
+      </div>
+      <div class="card">
+        <span class="n">2</span>
+        <h3>상세 코스 타임라인</h3>
+        <p>출발 → 경유지 → 도착 순서로 각 지점의 이름 · 주소 · 사진을 보여주고,
+           바이크 주행거리에 맞춰 주유 권장 지점을 자동으로 넣습니다.</p>
+      </div>
+      <div class="card">
+        <span class="n">3</span>
+        <h3>이 구간 추천 스팟</h3>
+        <p>경유지 사이 구간 주변의 관광지 · 음식점을 위치기반 관광정보조회로 찾아
+           추천하고, 라이더가 눌러 코스에 추가합니다.</p>
+      </div>
+      <div class="card">
+        <span class="n">4</span>
+        <h3>해안 코스</h3>
+        <p>동해안 · 남해안 · 서해안의 대표 해안 관광지를 경유하는 코스를 제공합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>서비스 화면</h2>
+    <p class="desc">실제 앱 화면입니다.</p>
+    <div class="shots">
+      <figure>
+        <img src="shots/1.png" alt="추천 코스 목록 화면">
+        <figcaption>추천 코스 목록</figcaption>
+      </figure>
+      <figure>
+        <img src="shots/2.png" alt="경로 지도 화면">
+        <figcaption>경로 지도</figcaption>
+      </figure>
+      <figure>
+        <img src="shots/3.png" alt="상세 코스 화면">
+        <figcaption>상세 코스</figcaption>
+      </figure>
+      <figure>
+        <img src="shots/4.png" alt="이 구간 추천 스팟 화면">
+        <figcaption>이 구간 추천 스팟</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>공공데이터 활용 내역</h2>
+    <p class="desc">한국관광공사_국문 관광정보 서비스_GW</p>
+    <div class="api">
+      <table>
+        <tr>
+          <td>위치기반 관광정보조회</td>
+          <td>라이딩 경로 주변의 관광지 · 음식점을 검색해 코스 후보로 제시</td>
+        </tr>
+        <tr>
+          <td>키워드 검색 조회</td>
+          <td>코스 카드와 스팟 카드에 표시할 대표이미지 조회</td>
+        </tr>
+        <tr>
+          <td>공통정보조회</td>
+          <td>스팟의 주소 · 좌표 · 개요 등 상세정보 조회</td>
+        </tr>
+        <tr>
+          <td>관광정보 동기화 목록 조회</td>
+          <td>관광정보를 주기적으로 내려받아 앱 내 캐시를 갱신 (호출량 절감)</td>
+        </tr>
+        <tr>
+          <td>지역기반 관광정보조회</td>
+          <td>지역 단위 관광정보 수집</td>
+        </tr>
+      </table>
+      <p class="src">
+        출처: 한국관광공사 국문 관광정보 서비스 —
+        <a href="https://www.data.go.kr/data/15101578/openapi.do" target="_blank"
+           rel="noopener">공공데이터포털</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>RoutePlay</strong> · 개인 개발 프로젝트 · Android (iOS 준비 중)</p>
+    <p>본 서비스는 한국관광공사가 공공데이터포털을 통해 제공하는 관광정보를 활용합니다.</p>
+  </div>
+</footer>
+
+</body>
+</html>
