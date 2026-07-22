@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoutePlay 코스 열기</title>
+<style>
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+       background:#faf9f6;color:#222;display:flex;min-height:100vh;
+       align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box}
+  .card{max-width:360px;width:100%}
+  h1{font-size:22px;margin:0 0 6px}
+  .sub{color:#777;font-size:14px;margin:0 0 24px;line-height:1.5}
+  .btn{display:block;width:100%;box-sizing:border-box;padding:15px;border-radius:12px;
+       border:none;font-size:16px;font-weight:700;text-decoration:none;margin:10px 0;cursor:pointer}
+  .primary{background:#E8552B;color:#fff}
+  .ghost{background:#fff;color:#333;border:1px solid #ddd}
+  .emoji{font-size:44px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="emoji">🏍️</div>
+  <h1>RoutePlay 코스</h1>
+  <p class="sub">아래 버튼을 누르면 RoutePlay 앱에서<br>이 라이딩 코스가 열립니다.</p>
+  <a class="btn primary" id="openApp" href="#">앱에서 코스 열기</a>
+  <a class="btn ghost" href="https://yimyoonjin.github.io/routeplay-page/">RoutePlay 앱 소개 보기</a>
+  <p class="sub" style="margin-top:18px;font-size:12.5px">
+    앱이 안 열리면 먼저 RoutePlay를 설치해 주세요.
+  </p>
+</div>
+<script>
+  var d = new URLSearchParams(location.search).get('d') || '';
+  var appUrl = 'routeplay://o?d=' + encodeURIComponent(d);
+  document.getElementById('openApp').href = appUrl;
+  if (d) { setTimeout(function(){ location.href = appUrl; }, 400); }
+</script>
+</body>
+</html>
