@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoutePlay 라이딩 코스</title>
+<meta property="og:type" content="website">
+<meta property="og:title" content="RoutePlay 라이딩 코스">
+<meta property="og:description" content="친구가 공유한 오토바이 라이딩 코스예요. 눌러서 앱에서 열어보세요 🏍️">
+<meta property="og:image" content="https://yimyoonjin.github.io/routeplay-page/o/banner.png">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Malgun Gothic",sans-serif;
+       background:#faf9f6;color:#222;min-height:100vh;
+       display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+  .banner{width:100%;max-width:640px;display:block}
+  .card{max-width:400px;width:100%;padding:24px;text-align:center}
+  h1{font-size:21px;margin:6px 0 6px}
+  .sub{color:#777;font-size:14px;margin:0 0 22px;line-height:1.55}
+  .btn{display:block;width:100%;padding:15px;border-radius:12px;border:none;
+       font-size:16px;font-weight:700;text-decoration:none;margin:10px 0;cursor:pointer}
+  .primary{background:#E8552B;color:#fff}
+  .ghost{background:#fff;color:#333;border:1px solid #ddd}
+</style>
+</head>
+<body>
+<img class="banner" src="https://yimyoonjin.github.io/routeplay-page/o/banner.png" alt="RoutePlay">
+<div class="card">
+  <h1>라이딩 코스가 도착했어요</h1>
+  <p class="sub">아래 버튼을 누르면 RoutePlay 앱에서<br>이 코스가 열립니다.</p>
+  <a class="btn primary" id="openApp" href="#">앱에서 코스 열기</a>
+  <a class="btn ghost" href="https://yimyoonjin.github.io/routeplay-page/">RoutePlay 앱 소개 보기</a>
+  <p class="sub" style="margin-top:18px;font-size:12.5px">
+    앱이 안 열리면 먼저 RoutePlay를 설치해 주세요.
+  </p>
+</div>
+<script>
+  var i = new URLSearchParams(location.search).get('i') || '';
+  var appUrl = 'routeplay://c?i=' + encodeURIComponent(i);
+  document.getElementById('openApp').href = appUrl;
+  if (i) { setTimeout(function(){ location.href = appUrl; }, 400); }
+</script>
+</body>
+</html>
