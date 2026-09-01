@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoutePlay 관리자 — 공지 작성</title>
+<style>
+  :root{ --brand:#E8552B; --ink:#1a1a1a; --sub:#6b6b70; --line:#e6e6e6; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:#f6f6f8; color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif; }
+  .wrap{ max-width:640px; margin:0 auto; padding:32px 18px 80px; }
+  h1{ font-size:22px; margin:0 0 4px; }
+  .muted{ color:var(--sub); font-size:14px; }
+  .card{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px; margin-top:18px; }
+  label{ display:block; font-size:13px; font-weight:700; margin:14px 0 6px; }
+  input, textarea{ width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:9px; font-size:15px; font-family:inherit; }
+  textarea{ min-height:110px; resize:vertical; }
+  button{ font-family:inherit; cursor:pointer; border:none; border-radius:10px; font-weight:800; }
+  .btn-primary{ background:var(--brand); color:#fff; padding:13px 18px; font-size:15px; width:100%; margin-top:18px; }
+  .btn-ghost{ background:#fff; color:var(--brand); border:1px solid var(--brand); padding:9px 14px; font-size:14px; }
+  .btn-del{ background:#fff; color:#d33; border:1px solid #f0c0c0; padding:6px 12px; font-size:13px; }
+  .row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .notice-item{ border-top:1px solid var(--line); padding:12px 0; }
+  .notice-item:first-child{ border-top:none; }
+  .date{ color:var(--sub); font-size:12px; }
+  .msg{ margin-top:12px; font-size:14px; }
+  .ok{ color:#1a9e5f; } .err{ color:#d33; }
+  .hidden{ display:none; }
+  .center{ text-align:center; padding:40px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>RoutePlay 관리자</h1>
+  <div class="muted">공지·이벤트를 작성해 앱에 발행합니다.</div>
+
+  <div id="login" class="card center">
+    <p class="muted">관리자 계정으로 로그인하세요.</p>
+    <button id="loginBtn" class="btn-primary" style="width:auto; padding:13px 24px;">Google로 로그인</button>
+    <div id="loginMsg" class="msg"></div>
+  </div>
+
+  <div id="denied" class="card center hidden">
+    <p class="err">이 계정은 관리자 권한이 없습니다.</p>
+    <button id="logoutBtn2" class="btn-ghost">로그아웃</button>
+  </div>
+
+  <div id="admin" class="hidden">
+    <div class="card">
+      <div class="row">
+        <div class="muted" id="who"></div>
+        <button id="logoutBtn" class="btn-ghost">로그아웃</button>
+      </div>
+      <label>제목 *</label>
+      <input id="title" placeholder="예: 가을 라이딩 이벤트">
+      <label>내용</label>
+      <textarea id="body" placeholder="공지 내용을 입력하세요."></textarea>
+      <label>이미지 URL (선택)</label>
+      <input id="imageUrl" placeholder="https://...">
+      <label>링크 URL (선택)</label>
+      <input id="link" placeholder="https://...">
+      <button id="publish" class="btn-primary">공지 발행</button>
+      <div id="msg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <div class="row"><strong>최근 공지</strong></div>
+      <div id="list" class="muted" style="margin-top:10px;">불러오는 중…</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, deleteDoc, doc }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBuQVwHOHCMxDDQaT_0Co5Ypb60SDf9yTM",
+  authDomain: "routeplay-6ee3c.firebaseapp.com",
+  projectId: "routeplay-6ee3c",
+  storageBucket: "routeplay-6ee3c.firebasestorage.app",
+  messagingSenderId: "317115227943",
+  appId: "1:317115227943:web:262203e500ec5619d1d302"
+};
+
+const ADMIN_EMAIL = "boy1dbswls@gmail.com";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const $ = (id) => document.getElementById(id);
+const show = (id) => $(id).classList.remove('hidden');
+const hide = (id) => $(id).classList.add('hidden');
+
+$('loginBtn').onclick = async () => {
+  $('loginMsg').textContent = '';
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch (e) { $('loginMsg').innerHTML = '<span class="err">로그인 실패: ' + (e.code || e.message) + '</span>'; }
+};
+$('logoutBtn').onclick = () => signOut(auth);
+$('logoutBtn2').onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, (user) => {
+  hide('login'); hide('denied'); hide('admin');
+  if (!user) { show('login'); return; }
+  if (user.email !== ADMIN_EMAIL) { show('denied'); return; }
+  $('who').textContent = user.email;
+  show('admin');
+  watchNotices();
+});
+
+$('publish').onclick = async () => {
+  const title = $('title').value.trim();
+  const body = $('body').value.trim();
+  const imageUrl = $('imageUrl').value.trim();
+  const link = $('link').value.trim();
+  const msg = $('msg');
+  if (!title) { msg.innerHTML = '<span class="err">제목을 입력하세요.</span>'; return; }
+  msg.textContent = '발행 중…';
+  try {
+    await addDoc(collection(db, 'notices'), { title, body, imageUrl, link, createdAt: serverTimestamp() });
+    $('title').value = ''; $('body').value = ''; $('imageUrl').value = ''; $('link').value = '';
+    msg.innerHTML = '<span class="ok">발행 완료! 앱에 바로 반영됩니다.</span>';
+  } catch (e) { msg.innerHTML = '<span class="err">발행 실패: ' + (e.code || e.message) + '</span>'; }
+};
+
+function watchNotices() {
+  const q = query(collection(db, 'notices'), orderBy('createdAt', 'desc'));
+  onSnapshot(q, (snap) => {
+    if (snap.empty) { $('list').textContent = '아직 공지가 없습니다.'; return; }
+    let html = '';
+    snap.forEach((d) => {
+      const m = d.data();
+      const dt = m.createdAt && m.createdAt.toDate ? m.createdAt.toDate() : null;
+      const ds = dt ? dt.getFullYear()+'.'+String(dt.getMonth()+1).padStart(2,'0')+'.'+String(dt.getDate()).padStart(2,'0') : '';
+      html += '<div class="notice-item"><div class="row"><div><div class="date">'+ds+'</div>'
+        + '<div style="font-weight:700; color:#1a1a1a;">'+ (m.title||'') +'</div></div>'
+        + '<button class="btn-del" data-id="'+d.id+'">삭제</button></div></div>';
+    });
+    $('list').innerHTML = html;
+    document.querySelectorAll('.btn-del').forEach((b) => {
+      b.onclick = async () => {
+        if (!confirm('이 공지를 삭제할까요?')) return;
+        try { await deleteDoc(doc(db, 'notices', b.dataset.id)); }
+        catch (e) { alert('삭제 실패: ' + (e.code || e.message)); }
+      };
+    });
+  }, (e) => { $('list').innerHTML = '<span class="err">목록 오류: '+(e.code||e.message)+'</span>'; });
+}
+</script>
+</body>
+</html>
