@@ -87,7 +87,7 @@ const firebaseConfig = {
   appId: "1:317115227943:web:262203e500ec5619d1d302"
 };
 
-const ADMIN_EMAIL = "boy1dbswls@gmail.com";
+const ADMIN_EMAILS = ["boy1dbswls@gmail.com", "zoazokun.studio@gmail.com"];
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -108,7 +108,7 @@ $('logoutBtn2').onclick = () => signOut(auth);
 onAuthStateChanged(auth, (user) => {
   hide('login'); hide('denied'); hide('admin');
   if (!user) { show('login'); return; }
-  if (user.email !== ADMIN_EMAIL) { show('denied'); return; }
+  if (!ADMIN_EMAILS.includes(user.email)) { show('denied'); return; }
   $('who').textContent = user.email;
   show('admin');
   watchNotices();
